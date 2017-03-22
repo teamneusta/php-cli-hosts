@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This file is part of the teamneusta/hosts project.
+  ~ Copyright (c) 2017 neusta GmbH | Ein team neusta Unternehmen
+  ~ For the full copyright and license information, please view the LICENSE file that was distributed with this source code.
+  ~ @license http://www.opensource.org/licenses/mit-license.html  MIT License
+  ~
+  -->
+
+<phpunit backupGlobals="true"
+         bootstrap="./vendor/autoload.php"
+         strict="true"
+         verbose="true">
+    <testsuite name="Host-Project">
+        <directory suffix="Test.php">./tests</directory>
+        <exclude>./src/Command/InitCommand.php</exclude>
+    </testsuite>
+    <testsuite name="Host-Build-Tools">
+        <directory suffix="Test.php">./build/tests</directory>
+    </testsuite>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+            <directory suffix=".php">./build/phar</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-html" target="./reports/report" lowUpperBound="35"
+             highLowerBound="70"/>
+        <log type="junit" target="./reports/logfile.xml" logIncompleteSkipped="false"/>
+        <log type="testdox-html" target="./reports/testdox.html"/>
+        <log type="coverage-clover" target="./reports/coverage.xml"/>
+    </logging>
+</phpunit>

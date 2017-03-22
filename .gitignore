@@ -1,0 +1,9 @@
+/.idea
+/.hosts
+/vendor
+/reports
+/build/vendor
+/hosts.phar
+/sphinx
+/phpunit.xml
+/hosts.phar
