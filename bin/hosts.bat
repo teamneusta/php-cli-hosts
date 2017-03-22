@@ -1,2 +1,2 @@
 @ECHO off
-php %~dp0/box %*
+php %~dp0/hosts %*
