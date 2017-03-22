@@ -1,1 +1,14 @@
-[{"name":"hosts.phar","sha1":"6830e285adcae61be802a012a8204df184bcd782","url":"https:\/\/tomtone.github.io\/host\/releases\/hosts-2.5.0.phar","version":"2.5.0"},{"name":"hosts.phar","sha1":"f8b47724740de96eadfb98dd510244181b2d8243","url":"https:\/\/tomtone.github.io\/host\/releases\/hosts-2.6.0.phar","version":"2.6.0"},{"name":"hosts.phar","sha1":"08bada905dd7983db16e2f06d901b6fb00fbed49","url":"https:\/\/tomtone.github.io\/host\/releases\/hosts-2.6.1.phar","version":"2.6.1"},{"name":"hosts.phar","sha1":"bc9ef439bd121ee085386893d8742aba5e3bb832","url":"https:\/\/tomtone.github.io\/host\/releases\/hosts-2.6.2.phar","version":"2.6.2"},{"name":"hosts.phar","sha1":"c7cb86d73a60fc4e3c98fa93424099eeaab6dfaf","url":"https:\/\/tomtone.github.io\/host\/releases\/hosts-2.6.3.phar","version":"2.6.3"},{"name":"hosts.phar","sha1":"65bb88a2a620ee6996ca3b2b2bf0492558e6ec49","url":"http:\/\/teamneusta.github.io\/php-cli-hosts\/releases\/hosts-2.6.4.phar","version":"2.6.4"},{"name":"hosts.phar","sha1":"0ed3214b4629e5f5e28037ce8abe9e968eab7d74","url":"http:\/\/teamneusta.github.io\/php-cli-hosts\/releases\/hosts-2.6.5.phar","version":"2.6.5"}]
+[
+  {
+    "name": "hosts.phar",
+    "sha1": "65bb88a2a620ee6996ca3b2b2bf0492558e6ec49",
+    "url": "http:\/\/teamneusta.github.io\/php-cli-hosts\/releases\/hosts-2.6.4.phar",
+    "version": "2.6.4"
+  },
+  {
+    "name": "hosts.phar",
+    "sha1": "0ed3214b4629e5f5e28037ce8abe9e968eab7d74",
+    "url": "http:\/\/teamneusta.github.io\/php-cli-hosts\/releases\/hosts-2.6.5.phar",
+    "version": "2.6.5"
+  }
+]
