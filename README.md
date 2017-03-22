@@ -25,7 +25,7 @@ Install hosts:
 ### As a Phar (Recommended)
 
 ```bash
-$ curl -LSs https://tomtone.github.io/host/installer.php | php
+$ curl -LSs https://teamneusta.github.io/php-cli-hosts/installer.php | php
 ```
 
 The command will check your PHP settings, warn you of any issues, and the download it to the current directory. From there, you may place it anywhere that will make it easier for you to access (such as `/usr/local/bin`) and chmod it to `755`.
