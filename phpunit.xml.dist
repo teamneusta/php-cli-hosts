@@ -21,12 +21,6 @@
             <directory suffix="Test.php">./build/tests</directory>
         </testsuite>
     </testsuites>
-    <!--filter>
-        <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src</directory>
-            <directory suffix=".php">./build/phar</directory>
-        </whitelist>
-    </filter-->
     <coverage includeUncoveredFiles="true"
               processUncoveredFiles="true"
               pathCoverage="false"
