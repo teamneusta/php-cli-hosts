@@ -11,6 +11,7 @@ namespace TeamNeusta\Hosts\Command;
 
 use Herrera\Phar\Update\Manager;
 use Herrera\Phar\Update\Manifest;
+use Herrera\Phar\Update\Update;
 use Herrera\Version\Version;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\LogicException;
@@ -66,8 +67,7 @@ class UpdateCommand extends Command
     {
         $manager = new Manager(Manifest::loadFile(self::MANIFEST_FILE));
         $updates = $manager->getManifest()->getUpdates();
-        /** @var \Herrera\Phar\Update\Update $latestUpdate */
-        $latestUpdate = array_pop($updates);
+        $latestUpdate = $this->getLatestUpdate($updates);
         $currentVersion = $this->getApplication()->getVersion();
         if ($latestUpdate->getVersion()->__toString() == $currentVersion) {
             $output->writeln('You got already the lastest Version: ' . $currentVersion);
@@ -79,5 +79,18 @@ class UpdateCommand extends Command
         $manager->update($this->getApplication()->getVersion(), true);
         $output->writeln('done.');
         return 0;
+    }
+
+    /**
+     * @param Update[] $updates
+     * @return Update
+     */
+    protected function getLatestUpdate($updates)
+    {
+        uasort($updates, function($a, $b){
+           return version_compare($a->getVersion()->__toString(), $b->getVersion()->__toString(), 'lt');
+        });
+
+        return array_shift($updates);
     }
 }
