@@ -67,7 +67,7 @@ class UpdateCommand extends Command
         $manager = new Manager(Manifest::loadFile(self::MANIFEST_FILE));
         $updates = $manager->getManifest()->getUpdates();
         /** @var \Herrera\Phar\Update\Update $latestUpdate */
-        $latestUpdate = array_shift($updates);
+        $latestUpdate = array_pop($updates);
         $currentVersion = $this->getApplication()->getVersion();
         if ($latestUpdate->getVersion()->__toString() == $currentVersion) {
             $output->writeln('You got already the lastest Version: ' . $currentVersion);
