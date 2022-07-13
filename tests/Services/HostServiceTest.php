@@ -9,9 +9,10 @@
 
 namespace TeamNeusta\Hosts\Tests\Services;
 
+use PHPUnit\Framework\TestCase;
 use TeamNeusta\Hosts\Services\HostService;
 
-class HostServiceTest extends \PHPUnit_Framework_TestCase
+class HostServiceTest extends TestCase
 {
     /**
      * @var \TeamNeusta\Hosts\Services\Provider\Filesystem | \PHPUnit_Framework_MockObject_MockObject
@@ -21,7 +22,7 @@ class HostServiceTest extends \PHPUnit_Framework_TestCase
     /**
      * Public setUp.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

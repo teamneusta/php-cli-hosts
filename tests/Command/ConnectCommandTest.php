@@ -9,17 +9,18 @@
 
 namespace TeamNeusta\Hosts\Tests\Command;
 
+use PHPUnit\Framework\TestCase;
 use TeamNeusta\Hosts\Command\ConnectCommand;
 use TeamNeusta\Hosts\Console\Application;
 use TeamNeusta\Hosts\Services\HostService;
 use TeamNeusta\Hosts\Services\Provider\Cli;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class ConnectCommandTest extends \PHPUnit_Framework_TestCase
+class ConnectCommandTest extends TestCase
 {
 
     /**
-     * @var HostService | \PHPUnit_Framework_MockObject_MockObject
+     * @var HostService | TestCase
      */
     private $hostServiceMock;
 
@@ -28,7 +29,7 @@ class ConnectCommandTest extends \PHPUnit_Framework_TestCase
      */
     private $cliServiceMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->hostServiceMock = $this->getMockBuilder("\\TeamNeusta\\Hosts\\Services\\HostService")
@@ -53,7 +54,7 @@ class ConnectCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testConnectToHostWillCreateCliConnection()
     {
-        $baseApplication = new Application(null, null, 'dev');
+        $baseApplication = new Application("", "", 'dev');
         $baseApplication->add(new ConnectCommand(null, $this->hostServiceMock, $this->cliServiceMock));
 
         $command = $baseApplication->find('connect');
@@ -65,8 +66,8 @@ class ConnectCommandTest extends \PHPUnit_Framework_TestCase
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
-        $this->assertContains("You have selected: SomeHost", $output);
-        $this->assertContains("establishing connection...", $output);
+        $this->assertStringContainsString("You have selected: SomeHost", $output);
+        $this->assertStringContainsString("establishing connection...", $output);
     }
 
     /**
@@ -76,7 +77,7 @@ class ConnectCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testConnectToHostWillExitOnChoosingExitOption()
     {
-        $baseApplication = new Application(null, null, 'dev');
+        $baseApplication = new Application("", "", 'dev');
         $baseApplication->add(new ConnectCommand(null, $this->hostServiceMock, $this->cliServiceMock));
 
         $command = $baseApplication->find('connect');
@@ -88,8 +89,8 @@ class ConnectCommandTest extends \PHPUnit_Framework_TestCase
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
-        $this->assertContains("exiting.", $output);
-        $this->assertContains("have a nice day :-)", $output);
+        $this->assertStringContainsString("exiting.", $output);
+        $this->assertStringContainsString("have a nice day :-)", $output);
     }
 
     /**
@@ -101,7 +102,7 @@ class ConnectCommandTest extends \PHPUnit_Framework_TestCase
     {
         $this->markTestSkipped('This test is not supported on OSX.');
 
-        $baseApplication = new Application(null, null, 'dev');
+        $baseApplication = new Application("", "", 'dev');
         $baseApplication->add(new ConnectCommand(null, $this->hostServiceMock, $this->cliServiceMock));
 
         $command = $baseApplication->find('connect');
@@ -113,6 +114,6 @@ class ConnectCommandTest extends \PHPUnit_Framework_TestCase
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
-        $this->assertContains("Host #2 is invalid.", $output);
+        $this->assertStringContainsString("Host #2 is invalid.", $output);
     }
 }

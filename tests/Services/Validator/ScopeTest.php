@@ -10,9 +10,10 @@
 namespace TeamNeusta\Hosts\Test\Services\Validator;
 
 
+use PHPUnit\Framework\TestCase;
 use TeamNeusta\Hosts\Services\Validator\Scope;
 
-class ScopeTest extends \PHPUnit_Framework_TestCase
+class ScopeTest extends TestCase
 {
 
     public function getScopesDataProvider()
@@ -50,8 +51,10 @@ class ScopeTest extends \PHPUnit_Framework_TestCase
     public function testValidateScopeWillThrowExceptionOnInvalidScopeValue($scope, $throwsException)
     {
         if ($throwsException) {
-            $this->expectException("InvalidArgumentException");
+            $this->expectException(\InvalidArgumentException::class);
         }
-        Scope::validateScope($scope);
+        $result = Scope::validateScope($scope);
+
+        $this->assertTrue($result);
     }
 }

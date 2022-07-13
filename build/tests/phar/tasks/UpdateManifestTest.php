@@ -13,7 +13,7 @@ require_once dirname(dirname(dirname(__DIR__))) . '/phar/tasks/UpdateManifest.ph
 /**
  * Class UpdateManifestTest
  */
-class UpdateManifestTest extends \PHPUnit_Framework_TestCase
+class UpdateManifestTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \org\bovigo\vfs\vfsStreamDirectory
@@ -24,7 +24,7 @@ class UpdateManifestTest extends \PHPUnit_Framework_TestCase
      */
     private $updateManifest;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

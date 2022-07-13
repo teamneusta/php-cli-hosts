@@ -15,7 +15,11 @@ class Scope
     const SCOPE_GLOBAL = 'global';
     const SCOPE_PROJECT = 'project';
 
-    public static function validateScope(string $scope = null)
+    /**
+     * @param string|null $scope
+     * @return bool
+     */
+    public static function validateScope(string $scope = null): bool
     {
         $scopes = [
             self::SCOPE_GLOBAL,
@@ -24,7 +28,9 @@ class Scope
         ];
 
         if (!in_array($scope, $scopes) && $scope !== null) {
-            throw new \InvalidArgumentException(printf('Scope "%s" not defined.', $scope));
+            throw new \InvalidArgumentException(sprintf('Scope "%s" not defined.', $scope));
         }
+
+        return true;
     }
 }
