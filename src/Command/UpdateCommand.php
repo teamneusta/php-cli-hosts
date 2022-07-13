@@ -42,7 +42,7 @@ class UpdateCommand extends Command
             ->setName('self-update')
             ->setAliases(['selfupdate'])
             // the short description shown while running "php bin/console list"
-            ->setDescription('Update magehost.phar to latest version.');
+            ->setDescription('Update hosts.phar to latest version.');
     }
 
     /**
