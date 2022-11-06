@@ -7,12 +7,11 @@
  *
  */
 
-namespace TeamNeusta\Hosts\Test\Services\Provider;
+namespace TeamNeusta\Hosts\Tests\Services\Provider;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use TeamNeusta\Hosts\Services\Provider\Filesystem;
-use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
  * Class FilesystemTest
@@ -34,11 +33,11 @@ class FilesystemTest extends TestCase
     /**
      * @var string
      */
-    private $_originalHomePath;
+    private $originalHomePath;
 
     public function setUp(): void
     {
-        $this->_originalHomePath = getenv('HOME');
+        $this->originalHomePath = getenv('HOME');
         parent::setUp();
 
         putenv('HOME=/some/home/path/');
@@ -56,7 +55,7 @@ class FilesystemTest extends TestCase
     public function tearDown(): void
     {
         parent::tearDown();
-        putenv("HOME=" . $this->_originalHomePath);
+        putenv("HOME=" . $this->originalHomePath);
     }
 
     public function testGetHomeDirWillRelyOnServerIfEnvironmentIsMissing()
@@ -110,12 +109,14 @@ class FilesystemTest extends TestCase
         $this->fileSystem->expects($this->once())
             ->method('exists')
             ->willReturn(false);
+
         $this->fileSystem->expects($this->once())
             ->method('dumpFile')
             ->with(
                 'someFile.txt',
                 json_encode(['hosts' => []])
             );
+
         $this->file->expects($this->once())
             ->method('getContents')
             ->with('someFile.txt')
@@ -125,7 +126,7 @@ class FilesystemTest extends TestCase
 
         $result = $filesystem->getConfiguration('someFile.txt', true);
 
-        $this->assertFalse($result);
+        $this->assertSame([],$result);
     }
 
     /**

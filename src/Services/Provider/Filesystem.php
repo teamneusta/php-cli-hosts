@@ -197,6 +197,7 @@ class Filesystem
     /**
      * Dump given configuration to given path
      *
+     * @codeCoverageIgnore
      * @param string $fileName
      * @param array $configuration
      * @return void

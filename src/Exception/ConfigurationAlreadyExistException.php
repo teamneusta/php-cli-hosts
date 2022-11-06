@@ -2,6 +2,9 @@
 
 namespace TeamNeusta\Hosts\Exception;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ConfigurationAlreadyExistException extends \IOException
 {
     public function __construct(

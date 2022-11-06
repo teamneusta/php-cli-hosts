@@ -51,7 +51,7 @@ class InitService
                 $this->createProjectConfiguration(true);
                 break;
             case Scope::SCOPE_GLOBAL:
-                // throw exception
+                throw new \InvalidArgumentException(sprintf('scope "%s" is not available for direct updates.', $scope));
                 break;
             default:
                 $this->createLocalConfiguration(true);
