@@ -1,11 +1,11 @@
 /.idea
 /.DS_Store
 /.hosts
+/.hosts.global
 /vendor
 /reports
 /build/vendor
 /hosts.phar
 /sphinx
 /phpunit.xml
-/hosts.phar
 /.phpunit.result.cache

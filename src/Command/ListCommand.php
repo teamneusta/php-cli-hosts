@@ -9,7 +9,6 @@
 
 namespace TeamNeusta\Hosts\Command;
 
-use TeamNeusta\Hosts\Services\HostService;
 use TeamNeusta\Hosts\Services\Validator\Scope;
 use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Helper\Table;

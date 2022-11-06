@@ -95,7 +95,7 @@ class FilesystemTest extends TestCase
 
         $filesystem = new Filesystem($this->fileSystem, $this->file);
 
-        $result = $filesystem->getConfigurationFile('someFile.txt', true);
+        $result = $filesystem->getConfiguration('someFile.txt', true);
 
         $this->assertSame([], $result);
     }
@@ -123,7 +123,7 @@ class FilesystemTest extends TestCase
 
         $filesystem = new Filesystem($this->fileSystem, $this->file);
 
-        $result = $filesystem->getConfigurationFile('someFile.txt', true);
+        $result = $filesystem->getConfiguration('someFile.txt', true);
 
         $this->assertFalse($result);
     }
@@ -149,7 +149,7 @@ class FilesystemTest extends TestCase
 
         $filesystem = new Filesystem($this->fileSystem, $this->file);
 
-        $result = $filesystem->getConfigurationFile('someFile.txt', true);
+        $result = $filesystem->getConfiguration('someFile.txt', true);
 
         $this->assertFalse($result);
     }

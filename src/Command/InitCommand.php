@@ -9,16 +9,18 @@
 
 namespace TeamNeusta\Hosts\Command;
 
-use TeamNeusta\Hosts\Exception\HostAlreadySet;
-use TeamNeusta\Hosts\Exception\HostAlreadySetException;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use TeamNeusta\Hosts\Exception\ConfigurationAlreadyExistException;
 use TeamNeusta\Hosts\Services\InitService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\LogicException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Question\Question;
+use TeamNeusta\Hosts\Services\Provider\Filesystem;
+use TeamNeusta\Hosts\Services\Validator\Scope;
 
 /**
  * Class InitCommand
@@ -33,23 +35,25 @@ class InitCommand extends Command
     /**
      * @var InitService
      */
-    protected $_initService;
+    protected InitService $initService;
 
     /**
      * Constructor.
      * @codeCoverageIgnore
      *
-     * @param string|null $name The name of the command; passing null means it must be set in configure()
+     * @param ?string $name The name of the command; passing null means it must be set in configure()
      *
-     * @param InitService $initService
+     * @param ?InitService $initService
      */
-    public function __construct($name = null, InitService $initService = null)
-    {
+    public function __construct(
+        string $name = null,
+        InitService $initService = null
+    ) {
         parent::__construct($name);
         if (is_null($initService)) {
             $initService = new InitService();
         }
-        $this->_initService = $initService;
+        $this->initService = $initService;
     }
 
     /**
@@ -61,14 +65,15 @@ class InitCommand extends Command
     {
         $this
             ->setName('init')
-            ->setDescription('init hosts');
+            ->setDescription('init hosts')
+            ->addArgument('scope', InputArgument::OPTIONAL, 'scope to be initialized');
     }
 
     /**
      * Executes the current command.
      *
      * This method is not abstract because you can use this class
-     * as a concrete class. In this case, instead of defining the
+     * as a concrete class. In this case, instead of defining
      * execute() method, you set the code to execute by passing
      * a Closure to the setCode() method.
      *
@@ -81,9 +86,70 @@ class InitCommand extends Command
      *
      * @see setCode()
      */
-    protected function execute(InputInterface $input, OutputInterface $output) : int
+    protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
-        $output->writeln("Still work in Progress!");
-        return 0;
+        $io = new SymfonyStyle($input, $output);
+        $output->writeln("starting Initialization");
+        /** @var QuestionHelper $questionHelper */
+        $questionHelper = $this->getHelper('question');
+        $scope = $input->getArgument('scope');
+
+        if (Scope::validateScope($scope)) {
+            $question = new ChoiceQuestion(
+                'choose scope to init',
+                [
+                    Scope::SCOPE_LOCAL,
+                    Scope::SCOPE_PROJECT
+                ],
+                0
+            );
+            $scope = $questionHelper->ask(
+                input: $input,
+                output: $output,
+                question: $question
+            );
+        }
+        $isCreated = false;
+        try {
+            $this->initService->createConfigurationByScope($scope);
+            $isCreated = true;
+            $io->info(sprintf('Configuration for scope "%s" was successfuly created.', $scope));
+        } catch (ConfigurationAlreadyExistException $exception) {
+            $io->info($exception->getMessage());
+        } catch (\Throwable $throwable) {
+            $io->error($throwable->getMessage());
+            return Command::FAILURE;
+        }
+
+        if ($scope == Scope::SCOPE_LOCAL) {
+            if ($isCreated) {
+                $question = 'Want to add global hosts url?';
+            } else {
+                $question = 'Want to update global hosts url?';
+            }
+            $updateGlobalUrl = $io->confirm($question, false);
+
+            if ($updateGlobalUrl) {
+                $globalUrl = $io->ask(
+                    'Please enter global hosts configuration url: ',
+                    '',
+                    function ($url) {
+                        return !filter_var($url, FILTER_VALIDATE_URL) === false;
+                    }
+                );
+                if ($globalUrl === false) {
+                    $io->error('invalid url provided');
+                    return Command::FAILURE;
+                } else {
+                    $this->initService->addGlobalHostUrl($globalUrl, !$isCreated);
+                    $info = $isCreated ? 'Global Host File Url added.' : 'Global Host File Url updated.';
+                    $io->info($info);
+                }
+            }
+        }
+
+        $io->listing(["To add local/project hosts use host:add", "To list existing entries use host:list"]);
+
+        return Command::SUCCESS;
     }
 }

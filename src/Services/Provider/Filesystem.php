@@ -10,6 +10,8 @@
 namespace TeamNeusta\Hosts\Services\Provider;
 
 use TeamNeusta\Hosts\Exception\HostAlreadySetException;
+use \Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
+use TeamNeusta\Hosts\Services\Validator\Scope;
 
 /**
  * Class Filesystem
@@ -21,10 +23,10 @@ class Filesystem
     /**
      * configuration file name.
      */
-    const CONFIGURATION_FILE_NAME = '.hosts';
+    public const CONFIGURATION_FILE_NAME = '.hosts';
 
     /**
-     * @var \Symfony\Component\Filesystem\Filesystem
+     * @var SymfonyFilesystem
      */
     protected $fs;
 
@@ -57,15 +59,15 @@ class Filesystem
      * Filesystem constructor.
      * @codeCoverageIgnore
      *
-     * @param \Symfony\Component\Filesystem\Filesystem $fs
-     * @param File $file
+     * @param ?SymfonyFilesystem $fs
+     * @param ?File $file
      */
     public function __construct(
-        \Symfony\Component\Filesystem\Filesystem $fs = null,
-        File $file = null
+        ?SymfonyFilesystem $fs = null,
+        ?File $file = null
     )
     {
-        $this->fs = $fs ?? new \Symfony\Component\Filesystem\Filesystem();
+        $this->fs = $fs ?? new SymfonyFilesystem();
         $this->file = $file ?? new File();
     }
 
@@ -74,7 +76,7 @@ class Filesystem
      *
      * @return null|string
      */
-    public function getHomeDir()
+    public function getHomeDir(): ?string
     {
         // Cannot use _SERVER superglobal since that's empty during UnitUnishTestCase
         // getenv('HOME') isn't set on Windows and generates a Notice.
@@ -83,7 +85,7 @@ class Filesystem
             // home should never end with a trailing slash.
             $home = rtrim($home, '/');
         } elseif (!empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
-            // home on windows
+            // home on Windows
             $home = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
             // If HOMEPATH is a root directory the path can end with a slash. Make sure
             // that doesn't happen.
@@ -95,56 +97,60 @@ class Filesystem
     /**
      * Retrieve local configuration.
      *
-     * @return bool|array
+     * @param bool $override
+     * @return array
+     * @throws \IOException
      */
-    public function getLocalConfiguration() : array
+    public function getLocalConfiguration(bool $override = false) : array
     {
         $fileName = $this->getFilename(self::getHomeDir());
-        $config = $this->getConfigurationFile($fileName);
-        $config = $this->addScope($config, 'local');
-        return $config;
+        $config = $this->getConfiguration($fileName);
+        return $this->addScope($config, Scope::SCOPE_LOCAL);
     }
 
     /**
      * Retrieve project configuration.
      *
-     * @return bool|array
+     * @param bool $createIfNotExist
+     * @return array
+     * @throws \IOException
      */
-    public function getProjectConfiguration() : array
+    public function getProjectConfiguration(bool $createIfNotExist = false) : array
     {
         $filename = $this->getFilename();
-        $config = $this->getConfigurationFile($filename, false);
-        $config = $this->addScope($config, 'project');
-        return $config;
+        $config = $this->getConfiguration($filename, $createIfNotExist);
+        return $this->addScope($config, Scope::SCOPE_PROJECT);
     }
 
     /**
      * Retrieve local configuration.
      *
-     * @return bool|array
+     * @return array
+     * @throws \IOException
      */
     public function getGlobalConfiguration() : array
     {
-        $fileName = $this->getGlobalUrlFromConfig();
+        $url = $this->getGlobalUrlFromConfig();
         $config = [];
-        if ($fileName !== false) {
-            $config = $this->getConfigurationFile($fileName, false);
-            $config = $this->addScope($config, 'global');
+        if ($url !== null) {
+            $config = $this->getConfigurationFromUrl($url);
+            $config = $this->addScope($config, Scope::SCOPE_GLOBAL);
         }
         return $config;
     }
 
     /**
-     * @param $fileName
+     * @param string $fileName
      * @param bool $createIfNotExist
-     * @return array|bool|mixed|null
+     * @param bool $isUrl
+     * @return array
      * @throws \IOException
      */
-    public function getConfigurationFile($fileName, $createIfNotExist = true)
+    public function getConfiguration(string $fileName, bool $createIfNotExist = true, bool $isUrl = false): array
     {
-        if (!$this->fs->exists($fileName) && $createIfNotExist) {
+        if (!$this->fs->exists($fileName) && $createIfNotExist && !$isUrl) {
             try {
-                // generate a empty array for local configuration
+                // generate an empty array for local configuration
                 $defaults = ['hosts' => []];
                 $this->fs->dumpFile($fileName, json_encode($defaults));
             } catch (\Exception $e) {
@@ -153,8 +159,7 @@ class Filesystem
         }
         $config = json_decode($this->file->getContents($fileName), true);
         if (is_null($config)) {
-            $config = false;
-            return $config;
+            return [];
         }
         return $config;
     }
@@ -162,11 +167,11 @@ class Filesystem
     /**
      * Adds Host to configuration file.
      *
-     * @param $hostConfig
+     * @param array $hostConfig
      * @param string $scope
      * @throws \Exception
      */
-    public function addHostToConfiguration($hostConfig, $scope = 'local')
+    public function addHostToConfiguration(array $hostConfig, string $scope = 'local'): void
     {
         try {
             $this->_isUpdate = true;
@@ -190,15 +195,28 @@ class Filesystem
     }
 
     /**
-     * @param $hostUrl
+     * Dump given configuration to given path
+     *
+     * @param string $fileName
+     * @param array $configuration
+     * @return void
+     */
+    public function dumpGlobalConfiguration(string $fileName, array $configuration): void
+    {
+        $this->fs->dumpFile($fileName, json_encode($configuration));
+    }
+
+    /**
+     * @param string $hostUrl
      * @param bool $override
      *
      * @throws HostAlreadySetException
+     * @throws \IOException
      */
-    public function setGlobalHostsUrl($hostUrl, $override = false)
+    public function setGlobalHostsUrl(string $hostUrl, bool $override = false): void
     {
         $fileName = $this->getFilename(self::getHomeDir());
-        $config = $this->getConfigurationFile($fileName);
+        $config = $this->getConfiguration($fileName);
 
         if (isset($config['hosts_url']) && $override) {
             $config['hosts_url'] = $hostUrl;
@@ -216,10 +234,9 @@ class Filesystem
      * @param string $baseDir
      * @return string
      */
-    public function getFilename($baseDir = '.') : string
+    public function getFilename(string $baseDir = '.') : string
     {
-        $fileName = $baseDir . DIRECTORY_SEPARATOR . self::CONFIGURATION_FILE_NAME;
-        return $fileName;
+        return $baseDir . DIRECTORY_SEPARATOR . self::CONFIGURATION_FILE_NAME;
     }
 
     /**
@@ -247,18 +264,30 @@ class Filesystem
     /**
      * Get global URL from config.
      *
-     * @return bool | string
+     * @return string|null
+     * @throws \IOException
      */
-    private function getGlobalUrlFromConfig() : string
+    private function getGlobalUrlFromConfig() : ?string
     {
         $fileName = $this->getFilename(self::getHomeDir());
-        $config = $this->getConfigurationFile($fileName, false);
+        $config = $this->getConfiguration($fileName, false);
 
-        $hostUrl = false;
+        $hostUrl = null;
         if (isset($config['hosts_url'])) {
             $hostUrl = $config['hosts_url'];
         }
 
         return $hostUrl;
+    }
+
+    private function getConfigurationFromUrl(string $url): array
+    {
+        $configuration =  $this->getConfiguration(
+            fileName: $url,
+            isUrl: true
+
+        );
+
+        return $configuration;
     }
 }
