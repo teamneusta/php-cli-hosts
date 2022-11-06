@@ -12,7 +12,7 @@
  */
 class UpdateManifest extends Task
 {
-    private $_baseUrl = 'http://teamneusta.github.io/php-cli-hosts/releases/';
+    private $_baseUrl = 'http://wamoco.github.io/php-cli-hosts/releases/';
 
     /**
      * @var VersionManager

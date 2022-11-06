@@ -118,7 +118,7 @@ namespace
     // Retrieve manifest
     echo " - Downloading manifest...$n";
 
-    $manifest = file_get_contents('http://teamneusta.github.io/php-cli-hosts/manifest.json');
+    $manifest = file_get_contents('http://wamoco.github.io/php-cli-hosts/manifest.json');
 
     echo " - Reading manifest...$n";
 

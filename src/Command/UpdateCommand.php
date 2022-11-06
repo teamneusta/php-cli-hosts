@@ -31,7 +31,7 @@ class UpdateCommand extends Command
     /**
      * manifest.json Path to get Updated versions.
      */
-    const MANIFEST_FILE = 'http://teamneusta.github.io/php-cli-hosts/manifest.json';
+    const MANIFEST_FILE = 'http://wamoco.github.io/php-cli-hosts/manifest.json';
 
     /**
      * Announce name and description so command could be called.

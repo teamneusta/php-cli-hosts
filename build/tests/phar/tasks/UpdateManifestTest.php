@@ -74,7 +74,7 @@ class UpdateManifestTest extends \PHPUnit\Framework\TestCase
             [
                 'name' => 'hosts.phar',
                 'sha1' => '040f06fd774092478d450774f5ba30c5da78acc8',
-                'url' => 'http://teamneusta.github.io/php-cli-hosts/releases/hostsTest-2.5.0.phar',
+                'url' => 'http://wamoco.github.io/php-cli-hosts/releases/hostsTest-2.5.0.phar',
                 'version' => '2.5.0'
             ]
         ];
@@ -100,7 +100,7 @@ class UpdateManifestTest extends \PHPUnit\Framework\TestCase
             [
                 'name' => 'hosts.phar',
                 'sha1' => '040f06fd774092478d450774f5ba30c5da78acc8',
-                'url' => 'http://teamneusta.github.io/php-cli-hosts/releases/hostsTest-2.5.0.phar',
+                'url' => 'http://wamoco.github.io/php-cli-hosts/releases/hostsTest-2.5.0.phar',
                 'version' => '2.5.0'
             ]
         ];
@@ -132,7 +132,7 @@ class UpdateManifestTest extends \PHPUnit\Framework\TestCase
             [
                 'name' => 'hosts.phar',
                 'sha1' => '040f06fd774092478d450774f5ba30c5da78acc8',
-                'url' => 'http://teamneusta.github.io/php-cli-hosts/releases/hostsTest-2.5.0.phar',
+                'url' => 'http://wamoco.github.io/php-cli-hosts/releases/hostsTest-2.5.0.phar',
                 'version' => '2.5.0'
             ]
         ];
@@ -158,7 +158,7 @@ class UpdateManifestTest extends \PHPUnit\Framework\TestCase
             [
                 'name' => 'hosts.phar',
                 'sha1' => '040f06fd774092478d450774f5ba30c5da78acc8',
-                'url' => 'http://teamneusta.github.io/php-cli-hosts/releases/hostsTest-2.5.0.phar',
+                'url' => 'http://wamoco.github.io/php-cli-hosts/releases/hostsTest-2.5.0.phar',
                 'version' => '2.5.0'
             ]
         ];
