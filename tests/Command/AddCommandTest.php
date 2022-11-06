@@ -9,20 +9,20 @@
 
 namespace TeamNeusta\Hosts\Tests\Command;
 
+use PHPUnit\Framework\TestCase;
 use TeamNeusta\Hosts\Command\AddCommand;
 use TeamNeusta\Hosts\Console\Application;
 use TeamNeusta\Hosts\Services\HostService;
-use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class AddCommandTest extends \PHPUnit_Framework_TestCase
+class AddCommandTest extends TestCase
 {
     /**
-     * @var HostService | \PHPUnit_Framework_MockObject_MockObject
+     * @var HostService | TestCase
      */
     private $hostServiceMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->hostServiceMock = $this->getMockBuilder("\\TeamNeusta\\Hosts\\Services\\HostService")
@@ -52,7 +52,7 @@ class AddCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddWillAddHostAndReturnAddedHost($parameter, $expectation)
     {
-        $baseApplication = new Application(null, null, 'dev');
+        $baseApplication = new Application("", "", 'dev');
         $baseApplication->add(new AddCommand(null, $this->hostServiceMock));
 
         $command = $baseApplication->find('host:add');
@@ -64,6 +64,6 @@ class AddCommandTest extends \PHPUnit_Framework_TestCase
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
-        $this->assertContains('Added Entry: username@some.weired.host for ' . $expectation . ' scope.', $output);
+        $this->assertStringContainsString('Added Entry: username@some.weired.host for ' . $expectation . ' scope.', $output);
     }
 }

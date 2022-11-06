@@ -9,6 +9,8 @@
 
 namespace TeamNeusta\Hosts\Test\Services\Provider;
 
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use TeamNeusta\Hosts\Services\Provider\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOException;
 
@@ -17,15 +19,15 @@ use Symfony\Component\Filesystem\Exception\IOException;
  *
  * @package Neusta\Hosts\Test\Services\Provider
  */
-class FilesystemTest extends \PHPUnit_Framework_TestCase
+class FilesystemTest extends TestCase
 {
     /**
-     * @var \Symfony\Component\Filesystem\Filesystem | \PHPUnit_Framework_MockObject_MockObject
+     * @var \Symfony\Component\Filesystem\Filesystem | MockObject
      */
     private $fileSystem;
 
     /**
-     * @var \TeamNeusta\Hosts\Services\Provider\File | \PHPUnit_Framework_MockObject_MockObject
+     * @var \TeamNeusta\Hosts\Services\Provider\File | MockObject
      */
     private $file;
 
@@ -34,7 +36,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
      */
     private $_originalHomePath;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->_originalHomePath = getenv('HOME');
         parent::setUp();
@@ -43,15 +45,15 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
 
         $this->fileSystem = $this->getMockBuilder("\\Symfony\\Component\\Filesystem\\Filesystem")
             ->disableOriginalConstructor()
-            ->setMethods(['exists', 'dumpFile'])
+            ->onlyMethods(['exists', 'dumpFile'])
             ->getMock();
         $this->file = $this->getMockBuilder("\\TeamNeusta\\Hosts\\Services\\Provider\\File")
             ->disableOriginalConstructor()
-            ->setMethods(['getContents'])
+            ->onlyMethods(['getContents'])
             ->getMock();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         putenv("HOME=" . $this->_originalHomePath);
@@ -269,13 +271,14 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
             ->method('exists')
             ->willReturn(true);
 
-        $this->fileSystem->expects($this->any())
+        $this->fileSystem->expects($this->once())
             ->method('dumpFile')
             ->with(
                 $expectedFileName,
                 json_encode($expectedData)
             );
-        $this->file->expects($this->any())
+
+        $this->file->expects($this->once())
             ->method('getContents')
             ->with($expectedFileName)
             ->willReturn(json_encode(['hosts' => []]));
@@ -332,12 +335,12 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
             ->method('exists')
             ->willReturn(true);
 
-        $this->file->expects($this->any())
+        $this->file->expects($this->once())
             ->method('getContents')
             ->with('/some/home/path'.DIRECTORY_SEPARATOR.'.hosts')
             ->willReturn(json_encode(['hosts' => []]));
 
-        $this->fileSystem->expects($this->any())
+        $this->fileSystem->expects($this->once())
             ->method('dumpFile')
             ->with('/some/home/path'.DIRECTORY_SEPARATOR.'.hosts', '{"hosts":[],"hosts_url":"someHost"}');
 
@@ -380,12 +383,12 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
             ->method('exists')
             ->willReturn(true);
 
-        $this->file->expects($this->any())
+        $this->file->expects($this->once())
             ->method('getContents')
             ->with('/some/home/path'.DIRECTORY_SEPARATOR.'.hosts')
             ->willReturn(json_encode(["hosts_url" => "someHost", 'hosts' => []]));
 
-        $this->fileSystem->expects($this->any())
+        $this->fileSystem->expects($this->once())
             ->method('dumpFile')
             ->with('/some/home/path'.DIRECTORY_SEPARATOR.'.hosts', '{"hosts_url":"someHost","hosts":[]}');
 

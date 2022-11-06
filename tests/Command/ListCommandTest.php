@@ -9,20 +9,21 @@
 
 namespace TeamNeusta\Hosts\Tests\Command;
 
+use PHPUnit\Framework\TestCase;
 use TeamNeusta\Hosts\Command\ListCommand;
 use TeamNeusta\Hosts\Console\Application;
 use TeamNeusta\Hosts\Services\HostService;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class ListCommandTest extends \PHPUnit_Framework_TestCase
+class ListCommandTest extends TestCase
 {
 
     /**
-     * @var HostService | \PHPUnit_Framework_MockObject_MockObject
+     * @var HostService | TestCase
      */
     private $hostServiceMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->hostServiceMock = $this->getMockBuilder("\\TeamNeusta\\Hosts\\Services\\HostService")
@@ -47,7 +48,7 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
                     'scope' => 'local',
                 ]
             ]);
-        $baseApplication = new Application(null, null, 'dev');
+        $baseApplication = new Application("", "", 'dev');
         $baseApplication->add(new ListCommand(null, $this->hostServiceMock));
 
         $command = $baseApplication->find('host:list');
@@ -59,7 +60,7 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "| SomeHost | weired.host.tld | jon.doe | local |",
             $output
         );
@@ -75,7 +76,7 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
         $this->hostServiceMock->method('getHosts')
             ->willReturn([]);
 
-        $baseApplication = new Application(null, null, 'dev');
+        $baseApplication = new Application("", "", 'dev');
         $baseApplication->add(new ListCommand(null, $this->hostServiceMock));
 
         $command = $baseApplication->find('host:list');
@@ -87,7 +88,7 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "| No entries found.             |",
             $output
         );

@@ -8,3 +8,4 @@
 /sphinx
 /phpunit.xml
 /hosts.phar
+/.phpunit.result.cache

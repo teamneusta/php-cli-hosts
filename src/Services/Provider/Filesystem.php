@@ -182,7 +182,6 @@ class Filesystem
             }
             $config['hosts'][] = array_merge($this->_defaultConfig, $hostConfig);
             $this->fs->dumpFile($fileName, json_encode($config));
-            $this->_isUpdate = false;
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         } finally {
