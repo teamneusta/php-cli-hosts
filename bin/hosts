@@ -10,6 +10,7 @@
 
 //@codeCoverageIgnoreStart
 require dirname(__DIR__) . "/vendor/autoload.php";
+
 use TeamNeusta\Hosts\Console\Application;
 
 $app = new Application('Hosts', '@package_version@');
@@ -17,7 +18,10 @@ $app = new Application('Hosts', '@package_version@');
 $app->add(new \TeamNeusta\Hosts\Command\ConnectCommand());
 $app->add(new \TeamNeusta\Hosts\Command\ListCommand());
 $app->add(new \TeamNeusta\Hosts\Command\AddCommand());
-$app->add(new \TeamNeusta\Hosts\Command\UpdateCommand());
+$app->add(new \TeamNeusta\Hosts\Command\Globals\ChangeUrlCommand());
+$app->add(new \TeamNeusta\Hosts\Command\Globals\UpdateCommand());
+$app->add(new \TeamNeusta\Hosts\Command\Globals\RemoveCommand());
+$app->add(new \TeamNeusta\Hosts\Command\Globals\InfoCommand());
 $app->add(new \TeamNeusta\Hosts\Command\InitCommand());
 $app->run();
 //@codeCoverageIgnoreEnd

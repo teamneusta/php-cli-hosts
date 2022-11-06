@@ -40,8 +40,9 @@ class HostService
      * @param $host
      * @param $user
      * @param int $port
+     * @throws \Exception
      */
-    public function update($name, $host, $user, $port = 22)
+    public function update(string $name, string $host, string $user, int $port = 22): void
     {
         $config = [
             'name' => $name,

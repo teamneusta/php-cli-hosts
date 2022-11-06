@@ -9,7 +9,6 @@
 
 namespace TeamNeusta\Hosts\Command;
 
-use TeamNeusta\Hosts\Services\HostService;
 use TeamNeusta\Hosts\Services\Validator\Scope;
 use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Helper\Table;
@@ -27,6 +26,9 @@ class ListCommand extends AbstractCommand
     {
         $this
             ->setName('host:list')
+            ->setAliases([
+                'hosts:list'
+            ])
             ->addOption(
                 'scope',
                 null,
