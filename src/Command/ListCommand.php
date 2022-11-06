@@ -27,6 +27,9 @@ class ListCommand extends AbstractCommand
     {
         $this
             ->setName('host:list')
+            ->setAliases([
+                'hosts:list'
+            ])
             ->addOption(
                 'scope',
                 null,
